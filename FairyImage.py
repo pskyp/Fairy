@@ -1,7 +1,7 @@
 import getopt
 import random
 import sys
-
+import sqlparse
 import pymysql.cursors
 from PIL import Image, ImageDraw, ImageFont
 
@@ -588,7 +588,7 @@ def getfairyIDfromname(name):
 
             sql = "SELECT `fairyid` FROM `fairy_tbl` WHERE `fairyname`=%s"
             cursor.execute(sql, (name,))
-            result = (cursor.fetchone)
+            result = cursor.fetchone()
     finally:
         connection.close()
     return result
@@ -868,7 +868,11 @@ def main(argv):
             sys.exit()
         elif opt in ('-f'):
             fairy = (createfairy(arg))
-            get_fairy_from_db("FAIRY_TBL", getfairyIDfromname(fairy['name']))
+            ID = str(getfairyIDfromname(fairy['name']))
+            ID = int(ID[12:len(ID)-1])
+            fairy = get_fairy_from_db("FAIRY_TBL", ID)
+            print ('Fairy ' + fairy['name'] +' ID ' +str(ID) + ' has been created')
+            getfairyimage(fairy).show()
             sys.exit()
         elif opt == '-l':
             list()
@@ -894,5 +898,3 @@ def list():
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-    fairy = createfairy('m')
-    print(getfairyIDfromname(fairy['name']))
