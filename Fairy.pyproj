@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>a2d66608-00de-4b0c-9bc5-167b80fa30c2</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>FairyImage.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Fairy</Name>
+    <RootNamespace>Fairy</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="FairyImage.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="data\" />
+    <Folder Include="SpriteSheets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\Arial.ttf" />
+    <Content Include="data\boy_fairy_names.txt" />
+    <Content Include="data\fairy_surnames.txt" />
+    <Content Include="data\girl_fairy_names.txt" />
+    <Content Include="SpriteSheets\boys_access.png" />
+    <Content Include="SpriteSheets\boys_bottom_clothes.png" />
+    <Content Include="SpriteSheets\boys_ears.png" />
+    <Content Include="SpriteSheets\boys_eyes.png" />
+    <Content Include="SpriteSheets\boys_fairy_base.png" />
+    <Content Include="SpriteSheets\boys_hair.png" />
+    <Content Include="SpriteSheets\boys_head_access.png" />
+    <Content Include="SpriteSheets\boys_mouths.png" />
+    <Content Include="SpriteSheets\boys_shoes.png" />
+    <Content Include="SpriteSheets\boys_top_clothes.png" />
+    <Content Include="SpriteSheets\boys_wands.png" />
+    <Content Include="SpriteSheets\girls_access.png" />
+    <Content Include="SpriteSheets\girls_bottom_clothes.png" />
+    <Content Include="SpriteSheets\girls_ears.png" />
+    <Content Include="SpriteSheets\girls_eyes.png" />
+    <Content Include="SpriteSheets\girls_hair.png" />
+    <Content Include="SpriteSheets\girls_head_access.png" />
+    <Content Include="SpriteSheets\girls_mouths.png" />
+    <Content Include="SpriteSheets\girls_shoes.png" />
+    <Content Include="SpriteSheets\girls_top_clothes.png" />
+    <Content Include="SpriteSheets\girls_wands.png" />
+    <Content Include="SpriteSheets\girl_fairy_base.png" />
+    <Content Include="SpriteSheets\wings.png" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
+  <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
