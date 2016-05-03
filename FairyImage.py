@@ -537,7 +537,7 @@ def getfairyimage(fairy, *arg):
     titlefont = ImageFont.truetype("data/Arial.ttf", 30)
     draw.text((150, 0), fairy['name'], (0, 0, 0), font=titlefont)
     draw.text((150, 550), "Age Index :" + str(fairy['agescore']), (0, 0, 0), font=titlefont)
-    draw.text((150, 580), "Kindness :" + str(fairy['kindscore'] / 2), (0, 0, 0), font=titlefont)
+    draw.text((150, 580), "Kindness :" + str(int(fairy['kindscore'] / 2)), (0, 0, 0), font=titlefont)
     draw.text((150, 610), "Charactor :" + str(fairy['charactorscore']), (0, 0, 0), font=titlefont)
     draw.text((150, 640), "Magic Strength :" + str(fairy['magicscore']), (0, 0, 0), font=titlefont)
     draw.text((150, 670), "Agility :" + str(fairy["agilityscore"]), (0, 0, 0), font=titlefont)
@@ -771,7 +771,7 @@ def drawfairytofile(fairy, *arg):
     titlefont = ImageFont.truetype("data/Arial.ttf", 30)
     draw.text((150, 0), fairy['name'], (0, 0, 0), font=titlefont)
     draw.text((150, 550), "Age Index :" + str(fairy['agescore']), (0, 0, 0), font=titlefont)
-    draw.text((150, 580), "Kindness :" + str(fairy['kindscore'] / 2), (0, 0, 0), font=titlefont)
+    draw.text((150, 580), "Kindness :" + str(int(fairy['kindscore'] / 2)), (0, 0, 0), font=titlefont)
     draw.text((150, 610), "Charactor :" + str(fairy['charactorscore']), (0, 0, 0), font=titlefont)
     draw.text((150, 640), "Magic Strength :" + str(fairy['magicscore']), (0, 0, 0), font=titlefont)
     draw.text((150, 670), "Agility :" + str(fairy["agilityscore"]), (0, 0, 0), font=titlefont)
@@ -812,11 +812,11 @@ def printfairymontage(fairyies, columns):
                         (255, 255, 255, 255))  # Empty canvas colour (r,g,b,a)?
     y = 0
     while y < len(fairyies):
-        im = getfairyimage(fairies[y])
+        im = getfairyimage(fairyies[y])
         canvas2.paste(im, ((y % columns) * 800, (y // columns) * 800), im)
         y += 1
     canvas2.show()
-    canvas2.save("Test Output/fairymontage.png")
+ #   canvas2.save("Test Output/fairymontage.png")
     return
 
 # p = personality()
@@ -844,13 +844,38 @@ def printfairymontage(fairyies, columns):
 # combine onto a single sheet, 10 * auto
 
 # fairies = []
-# for x in range(0, 40):
-#     fairies.append(get_fairy_from_db("FAIRY_TBL", x + 1))
-#
+# x=1
+# while (x<400):
+  #    fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+    #  x =x +10 
 # printfairymontage(fairies, 8)
 
 
 # create_ssheet_table('Sprite')
+#
+def fairysheet(lower, upper):
+# this takes a starting reference in the Database (lower) and prints out the next n (upper) fairies and produces a PNG file with 8 columns, suggest not more that 48 Fairies for A4
+
+    fairies = []
+    if (lower == 1):
+        x=lower
+        while (x<=lower+(upper*10)):
+            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+            x =x +10 
+        
+    elif (lower % 10 != 1):
+        x = int(((lower//10)*10)+1)
+        while (x<=lower+(upper*10)):
+            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+            x =x +10 
+  
+    elif (lower < 11):
+        x = 11
+        while (x<=lower+(upper*10)):
+            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+            x =x +10 
+    printfairymontage(fairies, 8)
+
 
 def main(argv):
     #    for argv in sys.argv: 1
@@ -858,7 +883,7 @@ def main(argv):
     command = ''
     argument = ''
     try:
-        opts, args = getopt.getopt(argv, "hf:g:c:d:ls:")
+        opts, args = getopt.getopt(argv, "hf:g:c:d:ls:r:")
     except getopt.GetoptError:
         print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
         sys.exit(2)
@@ -882,6 +907,9 @@ def main(argv):
             fairypicture = getfairyimage(fairy)
             fairypicture.show()
             sys.exit()
+        elif opt in ('-r'):
+            resetDB(int(arg))
+            sys.exit()
 # todo save spritesheets in DB
 # todo get names and id of boys and gorl fairies in db# - array?
 #todo createfairy mantage jpeg
@@ -896,5 +924,22 @@ def list():
     return
 
 
+def resetDB(x):
+# drops Fairy table and creates a new table with x number of random fairies
+    delete_table("FAIRY_TBL")
+    create_fairy_table("FAIRY_TBL")
+    for c in range (0,x):
+        if (random.randint(0,1) ==0):
+            createfairy('m')
+        else: createfairy('f')
+    return
+
 if __name__ == "__main__":
     main(sys.argv[1:])
+
+
+#fairysheet(400,40)
+#delete_table("FAIRY_TBL")
+#create_fairy_table("FAIRY_TBL")
+#createlotsfairies(10,"m")
+#createlotsfairies(10,"f")
