@@ -223,7 +223,7 @@ def get_fairy_from_db(dbname, id):
                  ('wisdom', result["fairywisdom"]), ('dexterity', result["fairydexterity"]),
                  ('humour', result["fairyhumour"]), ('magic', result["fairymagic"]), ('speed', result["fairyspeed"])
                  ])
-            print (fairy)
+            #print (fairy) 
             return fairy
     finally:
         connection.close()
@@ -883,7 +883,7 @@ def main(argv):
     command = ''
     argument = ''
     try:
-        opts, args = getopt.getopt(argv, "hf:g:c:d:ls:r:")
+        opts, args = getopt.getopt(argv, "hf:g:c:d:ls:r:x")
     except getopt.GetoptError:
         print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
         sys.exit(2)
@@ -904,11 +904,14 @@ def main(argv):
             sys.exit()
         elif opt in ('-s'):
             fairy = get_fairy_from_db("FAIRY_TBL", arg)
-            fairypicture = getfairyimage(fairy)
+            fairypicture = getrandomfairypic()
             fairypicture.show()
             sys.exit()
         elif opt in ('-r'):
             resetDB(int(arg))
+            sys.exit()
+        elif opt =='-x':
+            displayrandomfairypic()
             sys.exit()
 # todo save spritesheets in DB
 # todo get names and id of boys and gorl fairies in db# - array?
@@ -934,6 +937,29 @@ def resetDB(x):
         else: createfairy('f')
     return
 
+
+def displayrandomfairypic():
+    pic = getrandomfairypic()
+    print('is displayrandomfairypic working')
+    pic.show
+
+def getrandomfairypic():
+    l = getfairyreferences("FAIRY_TBL")
+    numgirl= (len(l[0]))
+    numboy= (len(l[1]))
+    Ids=[]
+    for x in range(0,numgirl-1):
+        Ids.append(l[0][x][0])
+    for y in range(0,numboy-1):
+        Ids.append(l[1][y][0])
+    fairy = get_fairy_from_db("FAIRY_TBL",int(Ids[random.randint(0,len(Ids))]) )
+    fairypicture = getfairyimage(fairy)
+    return fairypicture
+
+
+
+
+
 if __name__ == "__main__":
     main(sys.argv[1:])
 
@@ -943,3 +969,4 @@ if __name__ == "__main__":
 #create_fairy_table("FAIRY_TBL")
 #createlotsfairies(10,"m")
 #createlotsfairies(10,"f")
+
