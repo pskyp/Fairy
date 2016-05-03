@@ -175,11 +175,6 @@ def createfairy(sex):
     return fairy
 
 
-
-
-
-
-
 def get_fairy_from_db(dbname, id):
     connection = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
                                  user='b98cbef7a9450d',
@@ -344,40 +339,6 @@ def delete_table(dbname):
     # disconnect from server
     db.close()
 
-
-# def add_ssheet_to_db(dbname, image, blob_value):
-#     # Connect to the database
-#     connection = pymysql.connect(host='localhost',
-#                                  user='root',
-#                                  password='Shagp1ece',
-#                                  db='My_Fairy_Kingdom',
-#                                  charset='utf8mb4',
-#                                  cursorclass=pymysql.cursors.DictCursor)
-#
-#     try:
-#         with connection.cursor() as cursor:
-#             # Create a new record
-#             sql = "INSERT INTO " + dbname + "(`fairyname`, `fairysex`,`fairybodyX`,`fairybodyY`,`fairywingX`,`fairywingY`,`fairytopX`,`fairytopY`,`fairyshoesX`,`fairyshoesY`,`fairybottomX`,`fairybottomY`,`fairymouthX`,`fairymouthY`,`fairyeyesX`,`fairyeyesY`,`fairyhairX`,`fairyhairY`,`fairyearsX`,`fairyearsY`,`fairyheadaccessX`,`fairyheadaccessY`,`fairyaccessX`,`fairyaccessY`,`fairywandx`,`fairywandy`,`fairyagescore`,`fairykindnessscore`,`fairycharactorscore`,`fairymagicscore`,`fairyagilityscore`,`fairyintelligence`,`fairykindness`,`fairyfairness`,`fairyfunness`,`fairywisdom`,`fairydexterity`,`fairyhumour`,`fairymagic`,`fairyspeed`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s)"
-#
-#             cursor.execute(sql,
-#                            (fairy['name'], fairy['sex'], fairy['bodyx'], fairy['bodyy'], fairy['wingx'], fairy['wingy'],
-#                             fairy['topx'], fairy['topy'], fairy['shoesx'], fairy['shoesy'], fairy['bottomx'],
-#                             fairy['bottomy'], fairy['mouthsx'], fairy['mouthsy'], fairy['eyesx'], fairy['eyesy'],
-#                             fairy['hairx'], fairy['hairy'], fairy['earsx'], fairy['earsy'], fairy['haccessx'],
-#                             fairy['haccessy'], fairy['accessx'], fairy['accessy'], fairy['wandx'], fairy['wandy'],
-#                             fairy['agescore'], fairy['kindscore'], fairy['charactorscore'], fairy['magicscore'],
-#                             fairy['agilityscore'],
-#                             fairy['intelligence'], fairy['kindness'], fairy['fairness'], fairy['funness'],
-#                             fairy['wisdom'], fairy['dexterity'], fairy['humour'], fairy['magic'], fairy['speed']))
-#
-#
-#
-#
-#         connection.commit()
-#
-#     finally:
-#         connection.close()
-#     return
 
 def add_fairy_to_db(dbname, fairy):
     # Connect to the database
@@ -819,6 +780,131 @@ def printfairymontage(fairyies, columns):
  #   canvas2.save("Test Output/fairymontage.png")
     return
 
+
+def fairysheet(lower, upper):
+# this takes a starting reference in the Database (lower) and prints out the next n (upper) fairies and produces a PNG file with 8 columns, suggest not more that 48 Fairies for A4
+
+    fairies = []
+    if (lower == 1):
+        x=lower
+        while (x<=lower+(upper*10)):
+            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+            x =x +10 
+        
+    elif (lower % 10 != 1):
+        x = int(((lower//10)*10)+1)
+        while (x<=lower+(upper*10)):
+            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+            x =x +10 
+  
+    elif (lower < 11):
+        x = 11
+        while (x<=lower+(upper*10)):
+            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
+            x =x +10 
+    printfairymontage(fairies, 8)
+
+
+
+# todo save spritesheets in DB
+
+   
+
+
+def getrandomfairypic():
+    # gets a list of all fairy ID's in DB and randomly chooses one to draw to screen
+    l = getfairyreferences("FAIRY_TBL")
+    numgirl= (len(l[0]))
+    numboy= (len(l[1]))
+    Ids=[]
+    for x in range(0,numgirl-1):
+        Ids.append(l[0][x][0])
+    for y in range(0,numboy-1):
+        Ids.append(l[1][y][0])
+    fairy = get_fairy_from_db("FAIRY_TBL",int(Ids[random.randint(0,len(Ids))]) )
+    fairypicture = getfairyimage(fairy)
+    return fairypicture
+
+
+#   COMMAND LINE FUNCTIONS
+
+
+def main(argv):
+    #    for argv in sys.argv: 1
+    #    print (argv)
+    command = ''
+    argument = ''
+    try:
+        opts, args = getopt.getopt(argv, "hf:g:c:d:ls:r:x")
+    except getopt.GetoptError:
+        print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
+            sys.exit()
+        elif opt in ('-f'):
+            #create Fairy
+            fairy = (createfairy(arg))
+            # do Fairy lookup to get ID number
+            ID = str(getfairyIDfromname(fairy['name']))
+            ID = int(ID[12:len(ID)-1])
+            # get fairy object correspoding to returned ID
+            fairy = get_fairy_from_db("FAIRY_TBL", ID)
+            # Print to screen the created fairy details and the image
+            print ('Fairy ' + fairy['name'] +' ID ' +str(ID) + ' has been created')
+            getfairyimage(fairy).show()
+            sys.exit()
+        elif opt == '-l':
+            list()
+            sys.exit()
+        elif opt in ('-s'):
+            fairy = get_fairy_from_db("FAIRY_TBL", arg)
+            print (fairy)
+            getfairyimage(fairy).show()
+            sys.exit()
+        elif opt in ('-r'):
+            resetDB(int(arg))
+            sys.exit()
+        elif opt =='-x':
+            displayrandomfairypic()
+            sys.exit()
+
+
+def displayrandomfairypic():
+    getrandomfairypic().show()
+
+
+def resetDB(x):
+# drops Fairy table and creates a new table with x number of random fairies
+    delete_table("FAIRY_TBL")
+    create_fairy_table("FAIRY_TBL")
+    for c in range (0,x):
+        if (random.randint(0,1) ==0):
+            createfairy('m')
+        else: createfairy('f')
+    return
+
+def list():
+#  List of Fairy References
+    print ('There are ' + str(numberoffairies('all')) + ' fairies')
+    print (str(numberoffairies('m')) + ' are male')
+    print (str(numberoffairies('f')) + ' are female')
+    print ('They are as follows:')
+    print (getfairyreferences("FAIRY_TBL"))
+    return
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+#fairysheet(400,40)
+#delete_table("FAIRY_TBL")
+#create_fairy_table("FAIRY_TBL")
+#createlotsfairies(10,"m")
+#createlotsfairies(10,"f")
+
 # p = personality()
 # for key, value in p.iteritems():
 #    print (key + " : " + str(value))
@@ -853,120 +939,3 @@ def printfairymontage(fairyies, columns):
 
 # create_ssheet_table('Sprite')
 #
-def fairysheet(lower, upper):
-# this takes a starting reference in the Database (lower) and prints out the next n (upper) fairies and produces a PNG file with 8 columns, suggest not more that 48 Fairies for A4
-
-    fairies = []
-    if (lower == 1):
-        x=lower
-        while (x<=lower+(upper*10)):
-            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
-            x =x +10 
-        
-    elif (lower % 10 != 1):
-        x = int(((lower//10)*10)+1)
-        while (x<=lower+(upper*10)):
-            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
-            x =x +10 
-  
-    elif (lower < 11):
-        x = 11
-        while (x<=lower+(upper*10)):
-            fairies.append(get_fairy_from_db("FAIRY_TBL", x))
-            x =x +10 
-    printfairymontage(fairies, 8)
-
-
-def main(argv):
-    #    for argv in sys.argv: 1
-    #    print (argv)
-    command = ''
-    argument = ''
-    try:
-        opts, args = getopt.getopt(argv, "hf:g:c:d:ls:r:x")
-    except getopt.GetoptError:
-        print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
-            sys.exit()
-        elif opt in ('-f'):
-            fairy = (createfairy(arg))
-            ID = str(getfairyIDfromname(fairy['name']))
-            ID = int(ID[12:len(ID)-1])
-            fairy = get_fairy_from_db("FAIRY_TBL", ID)
-            print ('Fairy ' + fairy['name'] +' ID ' +str(ID) + ' has been created')
-            getfairyimage(fairy).show()
-            sys.exit()
-        elif opt == '-l':
-            list()
-            sys.exit()
-        elif opt in ('-s'):
-            fairy = get_fairy_from_db("FAIRY_TBL", arg)
-            fairypicture = getrandomfairypic()
-            fairypicture.show()
-            sys.exit()
-        elif opt in ('-r'):
-            resetDB(int(arg))
-            sys.exit()
-        elif opt =='-x':
-            displayrandomfairypic()
-            sys.exit()
-# todo save spritesheets in DB
-# todo get names and id of boys and gorl fairies in db# - array?
-#todo createfairy mantage jpeg
-# todo list of fairies with DB reference
-
-def list():
-    print ('There are ' + str(numberoffairies('all')) + ' fairies')
-    print (str(numberoffairies('m')) + ' are male')
-    print (str(numberoffairies('f')) + ' are female')
-    print ('They are as follows:')
-    print (getfairyreferences("FAIRY_TBL"))
-    return
-
-
-def resetDB(x):
-# drops Fairy table and creates a new table with x number of random fairies
-    delete_table("FAIRY_TBL")
-    create_fairy_table("FAIRY_TBL")
-    for c in range (0,x):
-        if (random.randint(0,1) ==0):
-            createfairy('m')
-        else: createfairy('f')
-    return
-
-
-def displayrandomfairypic():
-    pic = getrandomfairypic()
-    print('is displayrandomfairypic working')
-    pic.show
-
-def getrandomfairypic():
-    l = getfairyreferences("FAIRY_TBL")
-    numgirl= (len(l[0]))
-    numboy= (len(l[1]))
-    Ids=[]
-    for x in range(0,numgirl-1):
-        Ids.append(l[0][x][0])
-    for y in range(0,numboy-1):
-        Ids.append(l[1][y][0])
-    fairy = get_fairy_from_db("FAIRY_TBL",int(Ids[random.randint(0,len(Ids))]) )
-    fairypicture = getfairyimage(fairy)
-    return fairypicture
-
-
-
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
-
-
-#fairysheet(400,40)
-#delete_table("FAIRY_TBL")
-#create_fairy_table("FAIRY_TBL")
-#createlotsfairies(10,"m")
-#createlotsfairies(10,"f")
-
