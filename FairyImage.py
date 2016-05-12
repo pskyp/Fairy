@@ -176,14 +176,15 @@ def createfairy(sex):
 
 
 def get_fairy_from_db(dbname, id):
-    connection = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                                 user='b98cbef7a9450d',
-                                 password='10c5c604',
-                                 db='My_Fairy_Kingdom',
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
+                         db='My_Fairy_Kingdom',
+                         charset='utf8mb4',
+                         cursorclass=pymysql.cursors.DictCursor)
     try:
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+        with con.cursor(pymysql.cursors.DictCursor) as cursor:
             # Read a single record
             sql = "SELECT * FROM " + dbname + " WHERE `fairyid`=%s"
             cursor.execute(sql, (id,))
@@ -221,7 +222,7 @@ def get_fairy_from_db(dbname, id):
             #print (fairy) 
             return fairy
     finally:
-        connection.close()
+        con.close()
 
 
 # TODO delete Fairy from file
@@ -258,16 +259,23 @@ def create_ssheet_table(dbname):
 
 
 def create_fairy_table(dbname):
-    db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                         user='b98cbef7a9450d',
-                         password='10c5c604',
+    #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
                          db='My_Fairy_Kingdom',
                          charset='utf8mb4',
                          cursorclass=pymysql.cursors.DictCursor)
+
+          
     # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+   
+    #con = pymssql.connect(fairysheet.database.windows.net,pierswilcox,wsShagp1ece,"My_Fairy_Kingdom")
+    cursor = con.cursor()
 
     # Create table as per requirement, check if it already exists
+
+   
     sql = "CREATE TABLE IF NOT EXISTS " + dbname + """ (
         fairyid INT NOT NULL AUTO_INCREMENT,
         fairyname VARCHAR(45) NOT NULL,
@@ -319,38 +327,40 @@ def create_fairy_table(dbname):
     cursor.execute(sql)
 
     # disconnect from server
-    db.close()
+    con.close()
 
 
 def delete_table(dbname):
-    db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                         user='b98cbef7a9450d',
-                         password='10c5c604',
+     #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
                          db='My_Fairy_Kingdom',
                          charset='utf8mb4',
                          cursorclass=pymysql.cursors.DictCursor)
     # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+    cursor = con.cursor()
 
     # Create table as per requirement, check if it already exists
     sql = "DROP TABLE " + dbname
     cursor.execute(sql)
 
     # disconnect from server
-    db.close()
+    con.close()
 
 
 def add_fairy_to_db(dbname, fairy):
     # Connect to the database
-    connection = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                                 user='b98cbef7a9450d',
-                                 password='10c5c604',
-                                 db='My_Fairy_Kingdom',
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
+                         db='My_Fairy_Kingdom',
+                         charset='utf8mb4',
+                         cursorclass=pymysql.cursors.DictCursor)
 
     try:
-        with connection.cursor() as cursor:
+        with con.cursor() as cursor:
             # Create a new record
             sql = "INSERT INTO " + dbname + "(`fairyname`, `fairysex`,`fairybodyX`,`fairybodyY`,`fairywingX`,`fairywingY`,`fairytopX`,`fairytopY`,`fairyshoesX`,`fairyshoesY`,`fairybottomX`,`fairybottomY`,`fairymouthX`,`fairymouthY`,`fairyeyesX`,`fairyeyesY`,`fairyhairX`,`fairyhairY`,`fairyearsX`,`fairyearsY`,`fairyheadaccessX`,`fairyheadaccessY`,`fairyaccessX`,`fairyaccessY`,`fairywandx`,`fairywandy`,`fairyagescore`,`fairykindnessscore`,`fairycharactorscore`,`fairymagicscore`,`fairyagilityscore`,`fairyintelligence`,`fairykindness`,`fairyfairness`,`fairyfunness`,`fairywisdom`,`fairydexterity`,`fairyhumour`,`fairymagic`,`fairyspeed`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s)"
 
@@ -368,10 +378,10 @@ def add_fairy_to_db(dbname, fairy):
 
 
 
-        connection.commit()
+        con.commit()
 
     finally:
-        connection.close()
+        con.close()
     return
 
 
@@ -537,21 +547,22 @@ def createlotsfairies(number, sex):
 
 
 def getfairyIDfromname(name):
-    connection = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                                 user='b98cbef7a9450d',
-                                 password='10c5c604',
-                                 db='My_Fairy_Kingdom',
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
+                         db='My_Fairy_Kingdom',
+                         charset='utf8mb4',
+                         cursorclass=pymysql.cursors.DictCursor)
 
     try:
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+        with con.cursor(pymysql.cursors.DictCursor) as cursor:
 
             sql = "SELECT `fairyid` FROM `fairy_tbl` WHERE `fairyname`=%s"
             cursor.execute(sql, (name,))
             result = cursor.fetchone()
     finally:
-        connection.close()
+        con.close()
     return result
 
 def getfairyreferences(dbname):
@@ -562,15 +573,16 @@ def getfairyreferences(dbname):
 
 
 
-    connection = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                                 user='b98cbef7a9450d',
-                                 password='10c5c604',
-                                 db='My_Fairy_Kingdom',
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
+                         db='My_Fairy_Kingdom',
+                         charset='utf8mb4',
+                         cursorclass=pymysql.cursors.DictCursor)
 
     try:
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+        with con.cursor(pymysql.cursors.DictCursor) as cursor:
             # Read all girlfairy records
             sql = "SELECT `fairyid`,`fairyname` FROM " + dbname + " WHERE `fairysex`=%s"
             cursor.execute(sql, ('f',))
@@ -579,7 +591,7 @@ def getfairyreferences(dbname):
             for row in result:
                 girlarray.append([row['fairyid'], [row['fairyname']]])
 
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+        with con.cursor(pymysql.cursors.DictCursor) as cursor:
             # Read all boy fairy records
             sql = "SELECT `fairyid`,`fairyname` FROM " + dbname + " WHERE `fairysex`=%s"
             cursor.execute(sql, ('m',))
@@ -590,7 +602,7 @@ def getfairyreferences(dbname):
 
 
     finally:
-        connection.close()
+        con.close()
 
     fairyref = [girlarray, boyarray]
     return fairyref
