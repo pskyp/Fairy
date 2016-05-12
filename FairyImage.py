@@ -849,11 +849,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hf:g:c:d:ls:r:x")
     except getopt.GetoptError:
-        print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
+        print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l  -s <DBref>  -r -x')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l <number,sex> -s <DBref>')
+            print ('test.py -f <m/f> -g <DBref> -c <DB_Table_Name> -d <DB_TableName>  -l  -s <DBref>  -r -x')
             sys.exit()
         elif opt in ('-f'):
             #create Fairy
