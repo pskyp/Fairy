@@ -232,14 +232,15 @@ def get_fairy_from_db(dbname, id):
 # TODO LOAD SPRITE SHEET
 
 def create_ssheet_table(dbname):
-    db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
-                         user='b98cbef7a9450d',
-                         password='10c5c604',
+    #  db = pymysql.connect(host='eu-cdbr-azure-west-d.cloudapp.net',
+    con = pymysql.connect(host='173.194.230.251',
+                         user='dbuser',
+                         password='g00gledb',
                          db='My_Fairy_Kingdom',
                          charset='utf8mb4',
                          cursorclass=pymysql.cursors.DictCursor)
     # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+    cursor = con.cursor()
 
     # Create table as per requirement, check if it already exists
     sql = "CREATE TABLE IF NOT EXISTS " + dbname + """ (
@@ -255,7 +256,7 @@ def create_ssheet_table(dbname):
     cursor.execute(sql)
 
     # disconnect from server
-    db.close()
+    con.close()
 
 
 def create_fairy_table(dbname):
@@ -558,7 +559,7 @@ def getfairyIDfromname(name):
     try:
         with con.cursor(pymysql.cursors.DictCursor) as cursor:
 
-            sql = "SELECT `fairyid` FROM `fairy_tbl` WHERE `fairyname`=%s"
+            sql = "SELECT `fairyid` FROM `FAIRY_TBL` WHERE `fairyname`=%s"
             cursor.execute(sql, (name,))
             result = cursor.fetchone()
     finally:
